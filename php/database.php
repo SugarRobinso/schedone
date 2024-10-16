@@ -3,11 +3,18 @@
 class Database {
 
     // Define the database connection parameters
-    private $host = 'localhost';
-    private $dbname = 'salvatale';
-    private $user = 'salvatale';
-    private $password = 'salvatale';
-    private $pdo;  // Property to hold the PDO instance
+    private $host;
+    private $dbname;
+    private $user;
+    private $password;
+    private $handle;  // Property to hold the PDO instance
+
+    public function __construct($host='localhost', $dbname='salvatale', $user='salvatale', $password='salvatale'){
+        $this->host = $host;
+        $this->dbname = $dbname;
+        $this->user = $user;
+        $this->password = $password;
+    }
 
     // Method to establish a connection to the PostgreSQL database
     public function connect() {
@@ -21,76 +28,132 @@ class Database {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC // Set default fetch mode to associative array
             ];
 
-            // Create a new PDO instance and store it in the $pdo property
-            $this->pdo = new PDO($dsn, $this->user, $this->password, $options);
-            
-            echo "Connection Successful in PostgresSQL!" . "</br>";  // Display success message
+            // Create a new PDO instance and store it in the $handle property
+            $this->handle = new PDO($dsn, $this->user, $this->password, $options);
         
         }
         // Catch any PDO-related exceptions
         catch(PDOException $e) {
-            echo "Connection Error: " . $e->getMessage();  // Display error message
-            $this->disconnect();  // Disconnect from the database
-        }    
+            return false;
+        }
+        
+        return true;
     }
 
     // Method to close the connection to the database
     public function disconnect() {
         try {
-            $this->pdo = null;  // Set the PDO instance to null, closing the connection
+            $this->handle = null;  // Set the PDO instance to null, closing the connection
         }
         catch(PDOException $e) {
-            echo "". $e->getMessage();  // Display error message if there's an issue
+            return false;  // return false if there's an issue
         }
+        return true;
     }
 
-    // Method to execute a query and check if any rows are returned
-    public function query($sql) {
-        try {
-            $request = $this->pdo->query($sql);  // Execute the query
+    public function queryInsert($mode, $parameterList){
 
-            // If query returns rows, return true, otherwise return false
-            if($request && $request->fetch()) {
-                return true;
-            }
-            else {
-                return false;
+        try {
+            switch($mode) {
+                //Case to insert a new user into the 'users' table
+                case "REGISTER":
+                    // SQL query to insert a new user with the specified parameters
+                    $sql = "INSERT INTO users (username, mail, psw, credits) VALUES (:username, :mail, :password, :credits)";
+
+                    // Prepare the SQL query
+                    $query = $this->handle->prepare($sql);
+
+                    // Bind parameters to the query
+                    $query->bindParam(":username", $parameterList["username"]);
+                    $query->bindParam(":mail", $parameterList["mail"]);
+                    $query->bindParam(":password", $parameterList["password"]);
+                    $query->bindValue(":credits", 50);  // Set a default value of 50 credits
+
+                    // Execute the query
+                    $query->execute();
+
+                    break;
+                default:
+                    return false;
             }
         }
-        // Catch any exceptions during the query execution
         catch(PDOException $e) {
-            echo "". $e->getMessage();  // Display error message
-            $this->disconnect();  // Disconnect from the database
-            return false;  // Return false if an error occurs
+            return false;
         }
+        return true;
     }
 
-    // Method to insert a new user into the 'users' table
-    public function insertUser($username, $mail, $psw) {
-        try {
-            // SQL query to insert a new user with the specified parameters
-            $sql = "INSERT INTO users (username, mail, psw, credits) VALUES (:username, :mail, :psw, :credits)";
 
-            // Prepare the SQL query
-            $query = $this->pdo->prepare($sql);
+    public function querySelect($mode,$parameterList){
 
-            // Bind parameters to the query
-            $query->bindParam(":username", $username);
-            $query->bindParam(":mail", $mail);
-            $query->bindParam(":psw", $psw);
-            $query->bindValue(":credits", 50);  // Set a default value of 50 credits
+        $result = [];
 
-            // Execute the query
-            $query->execute();
+        try{
+
+            switch($mode){
+                case "USERNAME":
+                    # SQL query to check if the username exists
+                    $sql = "SELECT * FROM users WHERE username=:username";
+
+                    // Prepare the SQL query
+                    $query = $this->handle->prepare($sql);
+
+                    // Bind parameters to the query
+                    $query->bindParam(":username",$parameterList["username"]);
+
+                    // Execute the query
+                    $query->execute();
+                    $result = $query->fetchAll();
+                    break;
+                case "REGISTER":
+                    # SQL query to check if the mail exists
+                    $sql = "SELECT * FROM users WHERE mail=:mail OR username=:username";
+
+                    // Prepare the SQL query
+                    $query = $this->handle->prepare($sql);
+
+                    // Bind parameters to the query
+                    $query->bindParam(":mail",$parameterList["mail"]);
+                    $query->bindParam(":username",$parameterList["username"]);
+
+
+                    // Execute the query
+                    $query->execute();
+                    $result = $query->fetchAll();
+                    break;
+
+                case "LOGIN":
+
+                    $user = $parameterList['mail'];
+
+                    # SQL query to check if the username or mail match with password
+                    $sql = "SELECT * FROM users WHERE (mail = :mail OR username=:username) AND psw = :password ";
+
+                    // Prepare the SQL query
+                    $query = $this->handle->prepare($sql);
+
+                    // Bind parameters to the query
+                    $query->bindParam(":mail",$user);
+                    $query->bindParam(":username",$user);
+                    $query->bindParam(":password",$parameterList["password"]);
+
+                    // Execute the query
+                    $query->execute();
+                    $result = $query->fetchAll();
+                    break;
+                default:
+                    $result = null;
+                    break;
+                
+            }
+
         }
         // Catch any exceptions during the insert operation
         catch(PDOException $e) {
             echo "". $e->getMessage();  // Display error message
             $this->disconnect();  // Disconnect from the database
         }
+
+        return $result;
     }
 }
-
-
-
-?>

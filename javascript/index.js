@@ -21,11 +21,11 @@ loginForm.addEventListener('submit', function(e){
         return;
     }
     // Check if the email format is valid
-    if(!emailPattern.test(mail)){
-        createErroreMessage('Insert valid mail');  // Show error if email is not valid
-        e.preventDefault();  // Prevent form submission
-        return;
-    }
+    // if(!emailPattern.test(mail)){
+    //     createErroreMessage('Insert valid mail');  // Show error if email is not valid
+    //     e.preventDefault();  // Prevent form submission
+    //     return;
+    // }
     
     // Check if password is empty
     if(!psw){

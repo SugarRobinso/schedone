@@ -15,29 +15,17 @@
 			session_start();
 
 			// Variabili per i messaggi di errore
-			$registerUsernameError = '';
-			$registerMailError = '';
-			$loginMailError = '';
-			$loginPswError = '';
+			$registerError = '';
+			$loginError = '';
 	 
 			// Gestione dell'errore per username
-			if (isset($_SESSION['registerUsernameError'])) {
-				$registerUsernameError = htmlspecialchars($_SESSION['registerUsernameError']);
-				unset($_SESSION['registerUsernameError']); // Cancella l'errore dopo averlo usato
+			if (isset($_SESSION['registerError'])) {
+				$registerError = htmlspecialchars($_SESSION['registerError']);
+				unset($_SESSION['registerError']); // Cancella l'errore dopo averlo usato
 			}
-	 
-			 // Gestione dell'errore per email
-			if (isset($_SESSION['registerMailError'])) {
-				$registerMailError = htmlspecialchars($_SESSION['registerMailError']);
-				unset($_SESSION['registerMailError']); // Cancella l'errore dopo averlo usato
-			}
-			if (isset($_SESSION['mailError'])) {
-				$loginMailError = htmlspecialchars($_SESSION['mailError']);
-				unset($_SESSION['mailError']); // Cancella l'errore dopo averlo usato
-			}
-			if (isset($_SESSION['pswError'])) {
-				$loginPswError = htmlspecialchars($_SESSION['pswError']);
-				unset($_SESSION['pswError']); // Cancella l'errore dopo averlo usato
+			if (isset($_SESSION['credentialError'])) {
+				$loginError = htmlspecialchars($_SESSION['credentialError']);
+				unset($_SESSION['credentialError']); // Cancella l'errore dopo averlo usato
 			}
 
 
@@ -55,11 +43,8 @@
                 				<div id="credential-error">
 								<?php 
                         			// Stampa gli errori di registrazione
-                        			if (!empty($loginMailError)) {
-                            			echo "<p style='color: red;'>$loginMailError</p>";
-                        			}
-                        			if (!empty($loginPswError)) {
-                            			echo "<p style='color: red;'>$loginPswError</p>";
+                        			if (!empty($loginError)) {
+                            			echo "<p style='color: red;'>$loginError</p>";
                         			}
                     			?>
                 				</div>
@@ -79,16 +64,13 @@
 									<p>The password has to include: <br></p>
 									<p id="uppercase-check">Please enter at least one uppercase character</p>
 									<p id="number-check">Please enter at least one number </p>
-									<p id="character-check">Please enter at least one special character</p>
+									<p id="character-check">Please enter at least one special character(!@#$%^&*(),.?":{}|<>)</p>
 								</div>
 								<div id="register-credential-error" >
 								<?php 
                         			// Stampa gli errori di registrazione
-                        			if (!empty($registerUsernameError)) {
-                            			echo "<p style='color: red;'>$registerUsernameError</p>";
-                        			}
-                        			if (!empty($registerMailError)) {
-                            			echo "<p style='color: red;'>$registerMailError</p>";
+                        			if (!empty($registerError)) {
+                            			echo "<p style='color: red;'>$registerError</p>";
                         			}
                     			?>
 								</div>

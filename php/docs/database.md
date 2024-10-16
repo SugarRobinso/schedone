@@ -6,7 +6,7 @@
 - **`$dbname`**: The name of the database (default: `salvatale`).
 - **`$user`**: The database user (default: `salvatale`).
 - **`$password`**: The database password (default: `salvatale`).
-- **`$pdo`**: PDO object instance used to execute database operations.
+- **`$handle`**: PDO object instance used to execute database operations.
 
 ## Methods
 
@@ -25,7 +25,7 @@ public function connect(){
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC // Set default fetch mode
             ];
 
-            $this->pdo = new PDO($dsn, $this->user, $this->password, $options);
+            $this->handle = new PDO($dsn, $this->user, $this->password, $options);
             
             echo "Connection Successful in PostgresSQL!" . "</br>";
         
@@ -46,7 +46,7 @@ Closes the connection to the database.
 ```php
 public function disconnect(){
     try{
-        $this->pdo = null;
+        $this->handle = null;
 
     }
     catch(PDOException $e){
@@ -63,7 +63,7 @@ Executes a generic SQL query. Returns true if the query returns results, false o
 public function query($sql){
     try{
 
-        $request = $this->pdo->query( $sql );
+        $request = $this->handle->query( $sql );
 
         if($request && $request->fetch()){
             return true;
@@ -92,7 +92,7 @@ public function insertUser($username, $mail, $psw){
 
         $sql = "INSERT INTO users (username, mail, psw, credits) VALUES (:username, :mail, :psw, :credits)";
 
-        $query = $this->pdo->prepare($sql);
+        $query = $this->handle->prepare($sql);
 
         $query->bindParam(":username", $username);
         $query->bindParam(":mail", $mail);
