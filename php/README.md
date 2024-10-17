@@ -5,3 +5,4 @@
 - [login.php](docs/login.md)
 - [register.php](docs/register.md)
 
+NON GUARDARE, NON HO AGGIORNATO.
