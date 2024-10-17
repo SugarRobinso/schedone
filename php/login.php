@@ -1,7 +1,7 @@
 <?php
 
 // Include the database class file
-include "./SessionManager.php";
+require_once "./SessionManager.php";
 
 // Start a session to store errors or user data
 session_start();
@@ -13,10 +13,13 @@ $parameterList = [
 
 
 
-$sessionManager = new SessionManager();
 
 try {
+    $sessionManager = new SessionManager();
     $sessionManager->login($parameterList);
+
+    $_SESSION['sessionManager'] = serialize($sessionManager);
+    header('location: home.php');
 
 } catch (Exception $e) {
     // If an exception occurs, display the error message

@@ -2,24 +2,21 @@
 
 class User{
 
-    private $photo;
-    private $username;
-    private $credits;
+    public $photo;
+    public $username;
+    public $credits;
 
-    private $friends;
+    public $friends;
 
-    private $communities;
+    public $communities;
 
-    private $games;
+    public $games;
 
     public function __construct($username, $credits){
         $this->username = $username;
         $this->credits = $credits;
     }
     
-    public function getUsername(){
-        return $this->username;
-    }
 
     
 }

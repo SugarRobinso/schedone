@@ -1,8 +1,8 @@
 <?php
 
 
-include "./database.php";
-include "./User.php";
+require_once "./database.php";
+require_once "./User.php";
 
 class SessionManager{
 
@@ -73,7 +73,7 @@ class SessionManager{
     }
 
     public function getUsername(){
-        return $this->currentUser->getUsername();
+        return $this->currentUser->username;
     }
 
 

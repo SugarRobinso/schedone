@@ -51,7 +51,7 @@ class Database {
         return true;
     }
 
-    public function queryInsert($mode, $parameterList){
+    public function queryInsert($mode, $parameterList): bool{
 
         try {
             switch($mode) {
@@ -84,7 +84,7 @@ class Database {
     }
 
 
-    public function querySelect($mode,$parameterList){
+    public function querySelect($mode,$parameterList): array|null{
 
         $result = [];
 

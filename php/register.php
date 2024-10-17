@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include "./SessionManager.php";
+require_once "./SessionManager.php";
 
 
 $parameterList = [
