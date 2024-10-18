@@ -9,7 +9,7 @@ class Database {
     private $password;
     private $handle;  // Property to hold the PDO instance
 
-    public function __construct($host='localhost', $dbname='salvatale', $user='salvatale', $password='salvatale'){
+    public function __construct($host='localhost', $dbname='dbname', $user='user', $password='password'){
         $this->host = $host;
         $this->dbname = $dbname;
         $this->user = $user;
